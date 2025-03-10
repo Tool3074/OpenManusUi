@@ -132,7 +132,7 @@ async def run_agent_task(task_id: str, model: str, api_key: str, prompt: str, qu
         original_info = logger.info
         def custom_log(msg):
             original_info(msg)
-            queue.put_nowait(f"[LOG] {msg}")
+            queue.put_nowait(f"{msg}")
         logger.info = custom_log
 
         while True:

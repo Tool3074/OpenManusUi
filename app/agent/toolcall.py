@@ -5,7 +5,7 @@ from pydantic import Field
 
 from app.agent.react import ReActAgent
 from app.logger import logger
-from app.prompt.toolcall import NEXT_STEP_PROMPT, SYSTEM_PROMPT
+from app.prompt.toolcall import *
 from app.schema import AgentState, Message, ToolCall
 from app.tool import CreateChatCompletion, Terminate, ToolCollection
 
@@ -19,8 +19,8 @@ class ToolCallAgent(ReActAgent):
     name: str = "toolcall"
     description: str = "an agent that can execute tool calls."
 
-    system_prompt: str = SYSTEM_PROMPT
-    next_step_prompt: str = NEXT_STEP_PROMPT
+    system_prompt: str = ZH_SYSTEM_PROMPT
+    next_step_prompt: str = ZH_NEXT_STEP_PROMPT
 
     available_tools: ToolCollection = ToolCollection(
         CreateChatCompletion(), Terminate()
@@ -50,21 +50,23 @@ class ToolCallAgent(ReActAgent):
         self.tool_calls = response.tool_calls
 
         # Log response info
-        logger.info(f"✨ {self.name}'s thoughts: {response.content}")
-        logger.info(
-            f"🛠️ {self.name} selected {len(response.tool_calls) if response.tool_calls else 0} tools to use"
-        )
+        logger.info(f"✨ {self.name}的思考: {response.content}")
         if response.tool_calls:
             logger.info(
-                f"🧰 Tools being prepared: {[call.function.name for call in response.tool_calls]}"
+                f"🛠️ {self.name} 选择了使用 {len(response.tool_calls)}个工具 "
             )
+            logger.info(
+                f"🧰 正在准备的工具: {[call.function.name for call in response.tool_calls]}"
+            )
+        else:
+            logger.info(f"🛠️ 无需使用工具")
 
         try:
             # Handle different tool_choices modes
             if self.tool_choices == "none":
                 if response.tool_calls:
                     logger.warning(
-                        f"🤔 Hmm, {self.name} tried to use tools when they weren't available!"
+                        f"🤔 啊, {self.name} 无效的工具!"
                     )
                 if response.content:
                     self.memory.add_message(Message.assistant_message(response.content))
@@ -90,10 +92,10 @@ class ToolCallAgent(ReActAgent):
 
             return bool(self.tool_calls)
         except Exception as e:
-            logger.error(f"🚨 Oops! The {self.name}'s thinking process hit a snag: {e}")
+            logger.error(f"🚨 啊! {self.name}思考异常: {e}")
             self.memory.add_message(
                 Message.assistant_message(
-                    f"Error encountered while processing: {str(e)}"
+                    f"发生了错误: {str(e)}"
                 )
             )
             return False
@@ -111,7 +113,7 @@ class ToolCallAgent(ReActAgent):
         for command in self.tool_calls:
             result = await self.execute_tool(command)
             logger.info(
-                f"🎯 Tool '{command.function.name}' completed its mission! Result: {result}"
+                f"🎯 工具 '{command.function.name}' 执行完成了，结果是: {result}"
             )
 
             # Add tool response to memory
@@ -130,21 +132,21 @@ class ToolCallAgent(ReActAgent):
 
         name = command.function.name
         if name not in self.available_tools.tool_map:
-            return f"Error: Unknown tool '{name}'"
+            return f"未知工具 '{name}'"
 
         try:
             # Parse arguments
             args = json.loads(command.function.arguments or "{}")
 
             # Execute the tool
-            logger.info(f"🔧 Activating tool: '{name}'...")
+            logger.info(f"🔧 运行中的工具: '{name}'...")
             result = await self.available_tools.execute(name=name, tool_input=args)
 
             # Format result for display
             observation = (
-                f"Observed output of cmd `{name}` executed:\n{str(result)}"
+                f"命令 `{name}` 执行结果:\n{str(result)}"
                 if result
-                else f"Cmd `{name}` completed with no output"
+                else f"命令 `{name}` 无结果"
             )
 
             # Handle special tools like `finish`
@@ -169,7 +171,7 @@ class ToolCallAgent(ReActAgent):
 
         if self._should_finish_execution(name=name, result=result, **kwargs):
             # Set agent state to finished
-            logger.info(f"🏁 Special tool '{name}' has completed the task!")
+            logger.info(f"🏁 特定的工具 '{name}' 已经完成了任务!")
             self.state = AgentState.FINISHED
 
     @staticmethod

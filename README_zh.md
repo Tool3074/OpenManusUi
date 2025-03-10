@@ -6,6 +6,12 @@
     <a href="https://discord.gg/6dn7Sa3a"><img src="https://dcbadge.vercel.app/api/server/DYn29wFk9z?style=flat" alt="Discord Follow"></a>
 </p>
 
+# OpenManusUi 💻
+1. 用uvicorn web:app --reload代替python main.py启动即可
+2. 访问http://127.0.0.1:8000/static/index.html
+
+![img.png](pics/img.png)
+
 # OpenManus 🙋  
 
 Manus 非常棒，但 OpenManus 无需邀请码即可实现任何创意 🛫！
@@ -15,10 +21,6 @@ Manus 非常棒，但 OpenManus 无需邀请码即可实现任何创意 🛫！
 这是一个简洁的实现方案，欢迎任何建议、贡献和反馈！
 
 用 OpenManus 开启你的智能体之旅吧！
-
-# OpenManusUi 💻
-1. 用uvicorn web:app --reload代替python main.py启动即可
-2. 访问http://127.0.0.1:8000/static/index.html
 
 ## 项目演示  
 

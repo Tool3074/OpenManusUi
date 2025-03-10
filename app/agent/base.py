@@ -137,19 +137,19 @@ class BaseAgent(BaseModel, ABC):
                 self.current_step < self.max_steps and self.state != AgentState.FINISHED
             ):
                 self.current_step += 1
-                logger.info(f"Executing step {self.current_step}/{self.max_steps}")
+                logger.info(f"执行步骤 {self.current_step}/{self.max_steps}")
                 step_result = await self.step()
 
                 # Check for stuck state
                 if self.is_stuck():
                     self.handle_stuck_state()
 
-                results.append(f"Step {self.current_step}: {step_result}")
+                results.append(f"步骤 {self.current_step}: {step_result}")
 
             if self.current_step >= self.max_steps:
-                results.append(f"Terminated: Reached max steps ({self.max_steps})")
+                results.append(f"终止: 达到了最大步数 ({self.max_steps})")
 
-        return "\n".join(results) if results else "No steps executed"
+        return "\n".join(results) if results else "无任何步骤执行"
 
     @abstractmethod
     async def step(self) -> str:

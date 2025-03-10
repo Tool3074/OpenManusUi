@@ -1,7 +1,7 @@
 from pydantic import Field
 
 from app.agent.toolcall import ToolCallAgent
-from app.prompt.manus import NEXT_STEP_PROMPT, SYSTEM_PROMPT
+from app.prompt.manus import *
 from app.tool import Terminate, ToolCollection
 from app.tool.browser_use_tool import BrowserUseTool
 from app.tool.file_saver import FileSaver
@@ -23,8 +23,8 @@ class Manus(ToolCallAgent):
         "A versatile agent that can solve various tasks using multiple tools"
     )
 
-    system_prompt: str = SYSTEM_PROMPT
-    next_step_prompt: str = NEXT_STEP_PROMPT
+    system_prompt: str = ZH_SYSTEM_PROMPT
+    next_step_prompt: str = ZH_NEXT_STEP_PROMPT
 
     # Add general-purpose tools to the tool collection
     available_tools: ToolCollection = Field(

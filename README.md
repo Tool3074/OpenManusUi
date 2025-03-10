@@ -6,6 +6,12 @@
     <a href="https://discord.gg/6dn7Sa3a"><img src="https://dcbadge.vercel.app/api/server/DYn29wFk9z?style=flat" alt="Discord Follow"></a>
 </p>
 
+# OpenManusUi 💻
+1. use "uvicorn web:app --reload" instead of "python main.py" to start project
+2. access http://127.0.0.1:8000/static/index.html
+
+![img.png](pics/img.png)
+
 # OpenManus 🙋
 Manus is incredible, but OpenManus can achieve any ideas without an Invite Code 🛫!
 

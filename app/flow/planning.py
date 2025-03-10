@@ -144,7 +144,7 @@ class PlanningFlow(BaseFlow):
                     # Execute the tool via ToolCollection instead of directly
                     result = await self.planning_tool.execute(**args)
 
-                    logger.info(f"Plan creation result: {str(result)}")
+                    logger.info(f"计划创建结果: {str(result)}")
                     return
 
         # If execution reached here, create a default plan

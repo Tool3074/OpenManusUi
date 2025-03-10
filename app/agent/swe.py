@@ -3,7 +3,7 @@ from typing import List
 from pydantic import Field
 
 from app.agent.toolcall import ToolCallAgent
-from app.prompt.swe import NEXT_STEP_TEMPLATE, SYSTEM_PROMPT
+from app.prompt.swe import *
 from app.tool import Bash, StrReplaceEditor, Terminate, ToolCollection
 
 
@@ -13,8 +13,8 @@ class SWEAgent(ToolCallAgent):
     name: str = "swe"
     description: str = "an autonomous AI programmer that interacts directly with the computer to solve tasks."
 
-    system_prompt: str = SYSTEM_PROMPT
-    next_step_prompt: str = NEXT_STEP_TEMPLATE
+    system_prompt: str = ZH_SYSTEM_PROMPT
+    next_step_prompt: str = ZH_NEXT_STEP_TEMPLATE
 
     available_tools: ToolCollection = ToolCollection(
         Bash(), StrReplaceEditor(), Terminate()

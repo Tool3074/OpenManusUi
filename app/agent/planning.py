@@ -5,7 +5,7 @@ from pydantic import Field, model_validator
 
 from app.agent.toolcall import ToolCallAgent
 from app.logger import logger
-from app.prompt.planning import NEXT_STEP_PROMPT, PLANNING_SYSTEM_PROMPT
+from app.prompt.planning import *
 from app.schema import Message, ToolCall
 from app.tool import PlanningTool, Terminate, ToolCollection
 
@@ -21,8 +21,8 @@ class PlanningAgent(ToolCallAgent):
     name: str = "planning"
     description: str = "An agent that creates and manages plans to solve tasks"
 
-    system_prompt: str = PLANNING_SYSTEM_PROMPT
-    next_step_prompt: str = NEXT_STEP_PROMPT
+    system_prompt: str = ZH_PLANNING_SYSTEM_PROMPT
+    next_step_prompt: str = ZH_NEXT_STEP_PROMPT
 
     available_tools: ToolCollection = Field(
         default_factory=lambda: ToolCollection(PlanningTool(), Terminate())
@@ -133,7 +133,7 @@ class PlanningAgent(ToolCallAgent):
 
         tracker = self.step_execution_tracker[tool_call_id]
         if tracker["status"] != "completed":
-            logger.warning(f"Tool call {tool_call_id} has not completed successfully")
+            logger.warning(f"工具调用 {tool_call_id} 未成功完成")
             return
 
         step_index = tracker["step_index"]
@@ -150,7 +150,7 @@ class PlanningAgent(ToolCallAgent):
                 },
             )
             logger.info(
-                f"Marked step {step_index} as completed in plan {self.active_plan_id}"
+                f"标记在{self.active_plan_id}中的第{step_index}步完成了"
             )
         except Exception as e:
             logger.warning(f"Failed to update plan status: {e}")
@@ -200,11 +200,11 @@ class PlanningAgent(ToolCallAgent):
 
     async def create_initial_plan(self, request: str) -> None:
         """Create an initial plan based on the request."""
-        logger.info(f"Creating initial plan with ID: {self.active_plan_id}")
+        logger.info(f"创建计划: {self.active_plan_id}")
 
         messages = [
             Message.user_message(
-                f"Analyze the request and create a plan with ID {self.active_plan_id}: {request}"
+                f"分析并创建计划 {self.active_plan_id}: {request}"
             )
         ]
         self.memory.add_messages(messages)
@@ -225,7 +225,7 @@ class PlanningAgent(ToolCallAgent):
             if tool_call.function.name == "planning":
                 result = await self.execute_tool(tool_call)
                 logger.info(
-                    f"Executed tool {tool_call.function.name} with result: {result}"
+                    f"执行工具 {tool_call.function.name} 的结果: {result}"
                 )
 
                 # Add tool response to memory
